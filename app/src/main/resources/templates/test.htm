@@ -1,9 +1,17 @@
 <html>
     <head>
+        <style>
+            .main {
+             text-align:center;
+             font-size: 90px;
+             color:orange;
+            }
+        </style>
     </head>
-    <body dir="auto">
-        <div style="text-align:center;font-size: 90px;color:orange;">
-            Hello World!
+
+    <body>
+        <div class="main">
+            Hello <span th:text="${name}" />
         </div>
     </body>
 </html>

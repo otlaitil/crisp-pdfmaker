@@ -29,6 +29,10 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
 
+    // thymeleaf for html templating
+    implementation "org.thymeleaf:thymeleaf:3.0.12.RELEASE"
+
+    // openhtmltopdf for pdf generation
     def openHtmlToPdfVersion = "1.0.6"
     implementation("com.openhtmltopdf:openhtmltopdf-core:$openHtmlToPdfVersion")
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:$openHtmlToPdfVersion")

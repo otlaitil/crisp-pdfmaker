@@ -12,7 +12,7 @@ class PdfMakerTest {
     fun `generates a pdf file successfully`() {
         val pdfMaker = PdfMaker()
 
-        val template = "hello"
+        val template = "test"
         val data = mapOf("name" to "otto")
 
         val stream = ByteArrayOutputStream()

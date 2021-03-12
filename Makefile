@@ -7,7 +7,9 @@ sh:
 	$(RUN) bash
 run:
 	$(RUN) gradle run
+test:
+	$(RUN) gradle test
 clean:
 	$(RUN) gradle clean
 
-.PHONY: build sh run clean
+.PHONY: build sh run clean test

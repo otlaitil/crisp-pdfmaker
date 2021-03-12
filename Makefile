@@ -5,6 +5,8 @@ build:
 	docker build -t $(IMAGE) .
 sh:
 	$(RUN) bash
+jar:
+	$(RUN) gradle jar
 run:
 	$(RUN) gradle run
 test:
@@ -12,4 +14,4 @@ test:
 clean:
 	$(RUN) gradle clean
 
-.PHONY: build sh run clean test
+.PHONY: build sh run clean test jar

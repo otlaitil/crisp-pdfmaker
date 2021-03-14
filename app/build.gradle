@@ -16,7 +16,7 @@ plugins {
 
 repositories {
     // Use JCenter for resolving dependencies.
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -40,6 +40,10 @@ dependencies {
     // aws lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.1.0'
+
+    // aws s3
+    implementation 'software.amazon.awssdk:bom:2.16.18'
+    implementation 'software.amazon.awssdk:s3:2.16.18'
 
     // Use the Kotlin test library.
     testImplementation 'org.jetbrains.kotlin:kotlin-test'

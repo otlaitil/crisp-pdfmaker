@@ -9,6 +9,11 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
 class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
+    private val pdfMaker = PdfMaker()
+    private val s3 = S3Client.builder()
+        .region(Region.EU_CENTRAL_1)
+        .build()
+
     override fun handleRequest(event: Map<String, Any>, context: Context): Map<String, Any> {
         val logger = context.logger
         logger.log("Got $event")
@@ -22,7 +27,6 @@ class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
         val template = body["template"] as String
         val data = body["data"] as Map<String, String>
 
-        val pdfMaker = PdfMaker()
         val outputStream = ByteArrayOutputStream()
 
         pdfMaker.makePdf(
@@ -30,10 +34,6 @@ class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
             data,
             outputStream
         )
-
-        val s3 = S3Client.builder()
-            .region(Region.EU_CENTRAL_1)
-            .build()
 
         val putObjectRequest = PutObjectRequest.builder()
             .bucket(s3BucketName)

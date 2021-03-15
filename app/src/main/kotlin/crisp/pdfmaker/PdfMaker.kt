@@ -9,10 +9,13 @@ import org.thymeleaf.templateresolver.ITemplateResolver
 import java.io.OutputStream
 
 class PdfMaker {
-    fun makePdf(template: String, data: Map<String, String>, out: OutputStream) {
-        val engine = TemplateEngine()
-        engine.addTemplateResolver(templateResolver())
+    private var engine : TemplateEngine = TemplateEngine()
 
+    init {
+        engine.addTemplateResolver(templateResolver())
+    }
+
+    fun makePdf(template: String, data: Map<String, String>, out: OutputStream) {
         val context = Context()
         context.setVariable("data", data)
 

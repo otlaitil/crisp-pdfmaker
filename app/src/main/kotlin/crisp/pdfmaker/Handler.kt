@@ -3,16 +3,10 @@ package crisp.pdfmaker
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import java.io.ByteArrayOutputStream
-import software.amazon.awssdk.core.sync.RequestBody
-import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
 class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
     private val pdfMaker = PdfMaker()
-    private val s3 = S3Client.builder()
-        .region(Region.EU_CENTRAL_1)
-        .build()
+    private val s3Uploader = S3Uploader()
 
     override fun handleRequest(event: Map<String, Any>, context: Context): Map<String, Any> {
         val logger = context.logger
@@ -35,15 +29,7 @@ class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
             outputStream
         )
 
-        val putObjectRequest = PutObjectRequest.builder()
-            .bucket(s3BucketName)
-            .key(filename)
-            .build()
-
-        s3.putObject(
-            putObjectRequest,
-            RequestBody.fromBytes(outputStream.toByteArray())
-        )
+        s3Uploader.upload(s3BucketName, filename, outputStream.toByteArray())
 
         return mapOf(
             "filename" to filename,

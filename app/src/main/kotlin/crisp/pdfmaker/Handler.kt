@@ -4,15 +4,15 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import java.io.ByteArrayOutputStream
 
-class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
-    private val pdfMaker = PdfMaker()
-    private val s3Uploader = S3Uploader()
+class Handler(
+    private val pdfMaker: IPdfMaker = PdfMaker(),
+    private val s3Uploader: IS3Uploader = S3Uploader(),
+    private val s3BucketName: String = System.getenv("BUCKET_NAME")
+) : RequestHandler<Map<String, Any>, Map<String, Any>> {
 
     override fun handleRequest(event: Map<String, Any>, context: Context): Map<String, Any> {
         val logger = context.logger
         logger.log("Got $event")
-
-        val s3BucketName = System.getenv("BUCKET_NAME")
 
         val body = event["body"] as Map<*, *>
 
@@ -32,10 +32,9 @@ class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
         s3Uploader.upload(s3BucketName, filename, outputStream.toByteArray())
 
         return mapOf(
-            "filename" to filename,
             "bucket" to s3BucketName,
             "key" to filename,
-            "requestId" to requestId
+            "request-id" to requestId
         )
     }
 }

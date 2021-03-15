@@ -5,12 +5,16 @@ import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
-class S3Uploader {
+interface IS3Uploader {
+    fun upload(s3BucketName: String, filename: String, bytes: ByteArray)
+}
+
+class S3Uploader : IS3Uploader {
     private val s3 = S3Client.builder()
         .region(Region.EU_CENTRAL_1)
         .build()
 
-    fun upload(s3BucketName: String, filename: String, bytes: ByteArray) {
+    override fun upload(s3BucketName: String, filename: String, bytes: ByteArray) {
         val putObjectRequest = PutObjectRequest.builder()
             .bucket(s3BucketName)
             .key(filename)

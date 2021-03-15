@@ -8,14 +8,18 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import org.thymeleaf.templateresolver.ITemplateResolver
 import java.io.OutputStream
 
-class PdfMaker {
+interface IPdfMaker {
+    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream)
+}
+
+class PdfMaker : IPdfMaker {
     private var engine : TemplateEngine = TemplateEngine()
 
     init {
         engine.addTemplateResolver(templateResolver())
     }
 
-    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) {
+    override fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) {
         val context = Context()
         context.setVariable("data", data)
 

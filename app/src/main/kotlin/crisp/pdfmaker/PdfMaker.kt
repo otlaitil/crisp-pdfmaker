@@ -15,7 +15,7 @@ class PdfMaker {
         engine.addTemplateResolver(templateResolver())
     }
 
-    fun makePdf(template: String, data: Map<String, String>, out: OutputStream) {
+    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) {
         val context = Context()
         context.setVariable("data", data)
 

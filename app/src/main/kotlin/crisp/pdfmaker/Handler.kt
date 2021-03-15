@@ -25,7 +25,7 @@ class Handler : RequestHandler<Map<String, Any>, Map<String, Any>> {
         val requestId = body["request-id"] as String
         val filename = body["filename"] as String
         val template = body["template"] as String
-        val data = body["data"] as Map<String, String>
+        val data = body["data"] as Map<String, Any>
 
         val outputStream = ByteArrayOutputStream()
 

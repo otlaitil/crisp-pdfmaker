@@ -1,0 +1,11 @@
+version: 2.1
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: make build
+      - run: make test
+      - store_test_results:
+          path: app/build/test-results
+

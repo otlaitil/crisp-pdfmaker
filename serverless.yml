@@ -1,0 +1,44 @@
+service: pdfmaker
+frameworkVersion: '2'
+
+custom:
+  bucketName: pdfmaker-files
+
+provider:
+  name: aws
+  runtime: java11
+  region: eu-central-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetObject
+          Resource: "arn:aws:s3:::${self:custom.bucketName}/*"
+
+package:
+  artifact: app/build/libs/app.jar
+
+functions:
+  makePdf:
+    handler: crisp.pdfmaker.Handler
+    timeout: 30
+    environment:
+      BUCKET_NAME: ${self:custom.bucketName}
+    events:
+      - http:
+          path: /
+          method: post
+          integration: lambda
+
+resources:
+  Resources:
+    S3BucketOutputs:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}

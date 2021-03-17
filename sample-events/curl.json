@@ -1,6 +1,6 @@
 {
   "template": "hello",
-  "request-id": "abc-123",
+  "requestId": "abc-123",
   "filename": "hello.pdf",
   "data": {
     "name": "otto"

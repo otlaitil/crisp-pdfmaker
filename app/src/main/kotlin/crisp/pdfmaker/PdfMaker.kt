@@ -3,14 +3,17 @@ package crisp.pdfmaker
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
+import org.thymeleaf.exceptions.TemplateInputException
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import org.thymeleaf.templateresolver.ITemplateResolver
 import java.io.OutputStream
 
 interface IPdfMaker {
-    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream)
+    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) : PdfResult
 }
+
+data class PdfResult(val success : Boolean, val error : String? = null)
 
 class PdfMaker : IPdfMaker {
     private var engine : TemplateEngine = TemplateEngine()
@@ -19,11 +22,17 @@ class PdfMaker : IPdfMaker {
         engine.addTemplateResolver(templateResolver())
     }
 
-    override fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) {
+    override fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) : PdfResult {
         val context = Context()
         context.setVariable("data", data)
 
-        val htmlContent = engine.process(template, context)
+        var htmlContent : String
+
+        try {
+            htmlContent = engine.process(template, context)
+        } catch (e: TemplateInputException) {
+            return PdfResult(false, "Template not found.")
+        }
 
         val builder = PdfRendererBuilder().apply {
             useFastMode()
@@ -32,6 +41,8 @@ class PdfMaker : IPdfMaker {
 
         builder.toStream(out)
         builder.run()
+
+        return PdfResult(true)
     }
 
     private fun templateResolver(): ITemplateResolver {

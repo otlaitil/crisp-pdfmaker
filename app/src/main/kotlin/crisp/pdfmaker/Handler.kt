@@ -2,7 +2,15 @@ package crisp.pdfmaker
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
+import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
+
+data class Event(
+    val filename: String,
+    val requestId: String,
+    val template: String,
+    val data: Map<String, Any>
+)
 
 class Handler(
     private val pdfMaker: IPdfMaker = PdfMaker(),
@@ -10,31 +18,63 @@ class Handler(
     private val s3BucketName: String = System.getenv("BUCKET_NAME")
 ) : RequestHandler<Map<String, Any>, Map<String, Any>> {
 
-    override fun handleRequest(event: Map<String, Any>, context: Context): Map<String, Any> {
+    override fun handleRequest(request: Map<String, Any>, context: Context): Map<String, Any> {
         val logger = context.logger
-        logger.log("Got $event")
+        logger.log("Got $request")
 
-        val body = event["body"] as Map<*, *>
-
-        val requestId = body["request-id"] as String
-        val filename = body["filename"] as String
-        val template = body["template"] as String
-        val data = body["data"] as Map<String, Any>
+        val event = Gson().fromJson(request["body"] as String, Event::class.java)
 
         val outputStream = ByteArrayOutputStream()
 
-        pdfMaker.makePdf(
-            template,
-            data,
+        val pdfResult = pdfMaker.makePdf(
+            event.template,
+            event.data,
             outputStream
         )
 
-        s3Uploader.upload(s3BucketName, filename, outputStream.toByteArray())
+        if (!pdfResult.success) {
+            return errorResponse(pdfResult.error!!, event.requestId, 400)
+        }
+
+        s3Uploader.upload(s3BucketName, event.filename, outputStream.toByteArray())
+
+        return successResponse(s3BucketName, event.filename, event.requestId)
+    }
+
+    private fun successResponse(s3BucketName: String, filename: String, requestId: String): Map<String, Any> {
+        val jsonBody = Gson().toJson(
+            mapOf(
+                "bucket" to s3BucketName,
+                "key" to filename,
+                "requestId" to requestId
+            )
+        )
 
         return mapOf(
-            "bucket" to s3BucketName,
-            "key" to filename,
-            "request-id" to requestId
+            "body" to jsonBody,
+            "headers" to mapOf(
+                "Content-Type" to "application/json"
+            ),
+            "isBase64Encoded" to "false",
+            "statusCode" to "200"
+        )
+    }
+
+    private fun errorResponse(error: String, requestId: String, statusCode: Int): Map<String, Any> {
+        val jsonBody = Gson().toJson(
+            mapOf(
+                "error" to error,
+                "requestId" to requestId
+            )
+        )
+
+        return mapOf(
+            "body" to jsonBody,
+            "headers" to mapOf(
+                "Content-Type" to "application/json"
+            ),
+            "isBase64Encoded" to "false",
+            "statusCode" to statusCode.toString()
         )
     }
 }

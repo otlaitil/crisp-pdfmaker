@@ -1,12 +1,5 @@
 {
-  "body": {
-    "template": "hello",
-    "request-id": "abc123",
-    "filename": "hello.pdf",
-    "data": {
-      "name": "otto"
-    }
-  },
+  "body": "{\"template\": \"hello\", \"requestId\": \"abc123\", \"filename\": \"hello.pdf\", \"data\": {\"name\": \"otto\"}}",
   "path": "/",
   "headers": {
     "Accept": "application/json",

@@ -1,5 +1,5 @@
 IMAGE = crisp-pdfmaker
-RUN = docker run --volume `pwd`:/app --volume `pwd`/pdf-output:/pdf-output --rm -ti $(IMAGE)
+RUN = docker run -p 7000:7000 --volume `pwd`:/app --volume `pwd`/templates:/templates --rm -ti $(IMAGE)
 
 build:
 	docker build -t $(IMAGE) .

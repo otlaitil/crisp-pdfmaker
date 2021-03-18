@@ -1,0 +1,30 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Designer</title>
+</head>
+
+<body>
+    <h1>Available templates</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Template</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="template: ${data.templates}">
+            <td>
+                <a href="template.html" th:href="|/view-pdf?template-path=${template}|">
+                    <span th:text="${template}">Template name</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

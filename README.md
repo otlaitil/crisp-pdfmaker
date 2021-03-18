@@ -1,6 +1,6 @@
 # crisp-pdfmaker
 
-AWS Lambda backed service for generating accessible PDF's. Uses Thymeleaf templating engine and openhtmltopdf library for PDF generation.
+AWS Lambda backed service for generating accessible PDF's. Uses `thymeleaf` templating engine and `openhtmltopdf` library for PDF generation.
 
 ## Usage
 
@@ -8,6 +8,7 @@ AWS Lambda backed service for generating accessible PDF's. Uses Thymeleaf templa
 * Open Web UI with `make run` and navigate to `http://localhost:7000`
 * Edit the templates with your favourite text editor, refresh page to see the PDF.
 * Build jar and deploy
+* Invoke the lambda with HTTP POST, generated PDF is save to the configured S3 bucket.
 
 ## Deployment
 
@@ -44,7 +45,7 @@ Example JSON body of a request:
 }
 ```
 
-### Lambda Response Body
+### HTTP Response Body
 
 Example JSON body of a response:
 

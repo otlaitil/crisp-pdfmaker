@@ -15,7 +15,7 @@ plugins {
 }
 
 repositories {
-    // Use JCenter for resolving dependencies.
+    jcenter()
     mavenCentral()
 }
 
@@ -31,6 +31,10 @@ dependencies {
 
     // thymeleaf for html templating
     implementation "org.thymeleaf:thymeleaf:3.0.12.RELEASE"
+
+    implementation 'io.javalin:javalin:3.13.4'
+
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.28'
 
     // openhtmltopdf for pdf generation
     def openHtmlToPdfVersion = "1.0.6"

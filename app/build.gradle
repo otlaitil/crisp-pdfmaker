@@ -67,6 +67,17 @@ application {
 
 tasks {
     jar {
+        sourceSets {
+            from("/templates") {
+                into("templates")
+                include("**/*.htm")
+                eachFile { f ->
+                    f.path = "templates/${f.name}"
+                }
+                includeEmptyDirs(false)
+            }
+        }
+
         manifest {
             attributes "Main-Class": "crisp.pdfmaker.AppKt"
         }

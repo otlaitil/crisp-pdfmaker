@@ -26,14 +26,15 @@ class Handler(
 
         val outputStream = ByteArrayOutputStream()
 
-        val pdfResult = pdfMaker.makePdf(
-            event.template,
-            event.data,
-            outputStream
-        )
-
-        if (!pdfResult.success) {
-            return errorResponse(pdfResult.error!!, event.requestId, 400)
+        try {
+            pdfMaker.makePdf(
+                "templates/${event.template}",
+                event.data,
+                outputStream
+            )
+        } catch (e: TemplateNotFoundException) {
+            logger.log(e.message)
+            return errorResponse("Template not found.", event.requestId, 400)
         }
 
         s3Uploader.upload(s3BucketName, event.filename, outputStream.toByteArray())

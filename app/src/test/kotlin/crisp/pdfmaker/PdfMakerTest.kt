@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import java.io.ByteArrayOutputStream
-import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class PdfMakerTest {
@@ -13,14 +13,12 @@ class PdfMakerTest {
     fun `generates a pdf file successfully`() {
         val pdfMaker = PdfMaker()
 
-        val template = "test"
+        val template = "templates/test"
         val data = mapOf("name" to "otto")
 
         val stream = ByteArrayOutputStream()
 
-        val result = pdfMaker.makePdf(template, data, stream)
-
-        assertTrue { result.success }
+        pdfMaker.makePdf(template, data, stream)
 
         val generatedPdfText = extractPdfText(stream.toByteArray())
 
@@ -38,9 +36,9 @@ class PdfMakerTest {
 
         val stream = ByteArrayOutputStream()
 
-        val result = pdfMaker.makePdf(template, data, stream)
-
-        assertEquals(false, result.success)
+        assertFailsWith<TemplateNotFoundException> {
+            pdfMaker.makePdf(template, data, stream)
+        }
     }
 }
 

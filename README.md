@@ -4,19 +4,10 @@ AWS Lambda backed service for generating accessible PDF's. Uses Thymeleaf templa
 
 ## Usage
 
-```bash
-# build Docker image
-make build 
-
-# run tests
-make test 
-
-# generate sample PDF locally
-make run 
-
-# package fatjar for deployment
-make jar 
-```
+* Add your templates to `templates/` directory, see example template `hello`
+* Open Web UI with `make run` and navigate to `http://localhost:7000`
+* Edit the templates with your favourite text editor, refresh page to see the PDF.
+* Build jar and deploy
 
 ## Deployment
 

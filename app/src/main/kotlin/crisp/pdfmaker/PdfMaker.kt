@@ -1,6 +1,7 @@
 package crisp.pdfmaker
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import java.io.File
 import java.io.OutputStream
 
 interface IPdfMaker {
@@ -16,7 +17,8 @@ class PdfMaker(
 
         val builder = PdfRendererBuilder().apply {
             useFastMode()
-            withHtmlContent(htmlContent, null)
+            usePdfUaAccessbility(true)
+            withHtmlContent(htmlContent, File("/template-assets").toURI().toString())
         }
 
         builder.toStream(out)

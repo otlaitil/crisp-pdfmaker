@@ -1,17 +1,42 @@
-<html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
     <head>
+        <title>Example of an accessible PDF</title>
+        <meta name="subject" content="Accessible PDF test" />
+        <meta name="author" content="Crisp" />
+        <meta name="description" content="Example PDF" />
+        <meta charset="UTF-8" />
+
+        <bookmarks>
+            <bookmark name="Text" href="#para"/>
+        </bookmarks>
+
         <style>
-            .main {
-                 text-align: center;
-                 font-size: 90px;
-                 color: orange;
+            @font-face {
+                font-family: 'Roboto';
+                src: url(fonts/Roboto-Regular.ttf);
+                font-weight: normal;
+                font-style: normal;
+            }
+            @page {
+                margin: 30px 20px;
+            }
+            body {
+                margin: 0;
+                font-family: 'Roboto';
+                font-size: 15px;
             }
         </style>
     </head>
 
     <body>
-        <div class="main">
-            Hello hello <span th:text="${data.name}" />
-        </div>
+        <h1 id="title">Accessible PDF example</h1>
+
+        <h2 id="para"></h2>
+        <p>
+            Hello <span th:text="${data.name}">name</span>.
+        </p>
+
+        <h2 id="images">Image</h2>
+        <img src="images/example.jpg" alt="Example image."/>
     </body>
 </html>

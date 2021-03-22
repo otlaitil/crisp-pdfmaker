@@ -12,8 +12,11 @@ data class Event(
     val data: Map<String, Any>
 )
 
+private val assetsPath = Handler::class.java.classLoader.getResource("template-assets/").toString()
+
 class Handler(
-    private val pdfMaker: IPdfMaker = PdfMaker(),
+    private val templateProcessor: TemplateProcessor = TemplateProcessor(),
+    private val pdfMaker: IPdfMaker = PdfMaker(assetsPath),
     private val s3Uploader: IS3Uploader = S3Uploader(),
     private val s3BucketName: String = System.getenv("BUCKET_NAME")
 ) : RequestHandler<Map<String, Any>, Map<String, Any>> {
@@ -27,9 +30,10 @@ class Handler(
         val outputStream = ByteArrayOutputStream()
 
         try {
+            val templateHtml = templateProcessor.process("templates/${event.template}", event.data)
+
             pdfMaker.makePdf(
-                "templates/${event.template}",
-                event.data,
+                templateHtml,
                 outputStream
             )
         } catch (e: TemplateNotFoundException) {

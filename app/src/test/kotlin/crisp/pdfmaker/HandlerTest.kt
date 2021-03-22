@@ -18,6 +18,8 @@ class HandlerTest {
 
     @Test
     fun `handler works as expected`() {
+        val fakePdfMaker: IPdfMaker = mock {}
+
         val body = mapOf(
             "template" to "test",
             "filename" to "test.pdf",
@@ -30,6 +32,7 @@ class HandlerTest {
         val event = mapOf("body" to Gson().toJson(body))
 
         val handler = Handler(
+            pdfMaker = fakePdfMaker,
             s3Uploader = fakeS3Uploader,
             s3BucketName = "test-bucket"
         )
@@ -57,6 +60,8 @@ class HandlerTest {
 
     @Test
     fun `returns an error response if template is not found`() {
+        val fakePdfMaker: IPdfMaker = mock {}
+
         val body = mapOf(
             "template" to "nonexisting-template",
             "filename" to "test.pdf",
@@ -69,6 +74,7 @@ class HandlerTest {
         val event = mapOf("body" to Gson().toJson(body))
 
         val handler = Handler(
+            pdfMaker = fakePdfMaker,
             s3Uploader = fakeS3Uploader,
             s3BucketName = "test-bucket"
         )

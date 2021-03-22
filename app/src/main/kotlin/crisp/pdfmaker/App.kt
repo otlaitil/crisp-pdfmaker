@@ -5,11 +5,13 @@ import org.yaml.snakeyaml.Yaml
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-// process html views for the app from classloader
-private var appTemplateProcessor = TemplateProcessor(ResolverType.CLASSLOADER)
+// process pdf template views and load assets from disk
+private val assetsPath = File("template-assets").toURI().toString()
+private var pdfMaker = PdfMaker(assetsPath)
+private val templateProcessor: TemplateProcessor = TemplateProcessor(ResolverType.URL)
 
-// process pdf template views from disk
-private var pdfMaker = PdfMaker(TemplateProcessor(ResolverType.URL))
+// web ui: process html views from classpath
+private var appTemplateProcessor = TemplateProcessor(ResolverType.CLASSLOADER)
 
 fun main() {
     val app = Javalin.create().start(7000)
@@ -44,19 +46,20 @@ private fun index(): String {
 }
 
 private fun viewPdf(name: String?): ByteArray {
-    val template = File("/templates/$name/$name.htm")
-    val templateUri = template.toURI()
+    val template = File("templates/$name/$name.htm")
+    val templatePath = template.toURI().toString()
 
-    val dataYaml = File("/templates/$name/$name.yml")
+    val dataYaml = File("templates/$name/$name.yml")
 
     val yaml = Yaml()
     val data: Map<String, Any> = yaml.load(dataYaml.inputStream())
 
     val output = ByteArrayOutputStream()
 
+    val htmlContent = templateProcessor.process(templatePath, data)
+
     pdfMaker.makePdf(
-        templateUri.toString(),
-        data,
+        htmlContent,
         output
     )
 

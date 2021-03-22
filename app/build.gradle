@@ -68,11 +68,27 @@ application {
 tasks {
     jar {
         sourceSets {
-            from("/templates") {
+            from("../templates") {
                 into("templates")
                 include("**/*.htm")
                 eachFile { f ->
                     f.path = "templates/${f.name}"
+                }
+                includeEmptyDirs(false)
+            }
+
+            from("../template-assets/fonts") {
+                into("template-assets/fonts")
+                eachFile { f ->
+                    f.path = "template-assets/fonts/${f.name}"
+                }
+                includeEmptyDirs(false)
+            }
+
+            from("../template-assets/images") {
+                into("template-assets/images")
+                eachFile { f ->
+                    f.path = "template-assets/images/${f.name}"
                 }
                 includeEmptyDirs(false)
             }

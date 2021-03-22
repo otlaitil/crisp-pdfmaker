@@ -5,6 +5,7 @@ AWS Lambda backed service for generating accessible PDF's. Uses `thymeleaf` temp
 ## Usage
 
 * Add your templates to `templates/` directory, see example template `hello`
+    * Place images to `template-assets/images` and fonts to `template-assets/fonts`
 * Open Web UI with `make run` and navigate to `http://localhost:7000`
 * Edit the templates with your favourite text editor, refresh page to see the PDF.
 * Build jar and deploy
@@ -37,7 +38,7 @@ Example JSON body of a request:
 ```json
 {
     "template": "hello",
-    "request-id": "abc-123",
+    "requestId": "abc-123",
     "filename": "hello.pdf",
     "data": {
         "name": "otto"
@@ -53,6 +54,6 @@ Example JSON body of a response:
 {
     "bucket": "pdfmaker-files",
     "key": "hello.pdf",
-    "request-id": "abc-123"
+    "requestId": "abc-123"
 }
 ```

@@ -34,7 +34,7 @@ class TemplateProcessor(
         try {
             return engine.process(template, context)
         } catch (e: TemplateInputException) {
-            throw TemplateNotFoundException("Template not found.")
+            throw TemplateNotFoundException("Template $template not found.")
         }
     }
 

@@ -4,19 +4,19 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import java.io.OutputStream
 
 interface IPdfMaker {
-    fun makePdf(template: String, data: Map<String, Any>, out: OutputStream)
+    fun makePdf(htmlContent: String, out: OutputStream)
 }
 
 class PdfMaker(
-    private val templateProcessor: TemplateProcessor = TemplateProcessor()
+    private val assetsPath: String,
+    private val useAccessibilityMode: Boolean = true
 ) : IPdfMaker {
 
-    override fun makePdf(template: String, data: Map<String, Any>, out: OutputStream) {
-        val htmlContent = templateProcessor.process(template, data)
-
+    override fun makePdf(htmlContent: String, out: OutputStream) {
         val builder = PdfRendererBuilder().apply {
             useFastMode()
-            withHtmlContent(htmlContent, null)
+            usePdfUaAccessbility(useAccessibilityMode)
+            withHtmlContent(htmlContent, assetsPath)
         }
 
         builder.toStream(out)

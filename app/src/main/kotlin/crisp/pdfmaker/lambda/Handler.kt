@@ -1,8 +1,10 @@
-package crisp.pdfmaker
+package crisp.pdfmaker.lambda
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.google.gson.Gson
+import crisp.pdfmaker.core.Application
+import crisp.pdfmaker.core.TemplateNotFoundException
 import java.io.ByteArrayOutputStream
 
 data class Event(
@@ -12,38 +14,25 @@ data class Event(
     val data: Map<String, Any>
 )
 
-private val assetsPath = Handler::class.java.classLoader.getResource("template-assets/").toString()
-
-class Handler(
-    private val templateProcessor: TemplateProcessor = TemplateProcessor(),
-    private val pdfMaker: IPdfMaker = PdfMaker(assetsPath),
-    private val s3Uploader: IS3Uploader = S3Uploader(),
-    private val s3BucketName: String = System.getenv("BUCKET_NAME")
-) : RequestHandler<Map<String, Any>, Map<String, Any>> {
-
+class Handler(private val application: Application = Application()) :
+    RequestHandler<Map<String, Any>, Map<String, Any>> {
     override fun handleRequest(request: Map<String, Any>, context: Context): Map<String, Any> {
         val logger = context.logger
         logger.log("Got $request")
 
         val event = Gson().fromJson(request["body"] as String, Event::class.java)
-
         val outputStream = ByteArrayOutputStream()
 
         try {
-            val templateHtml = templateProcessor.process("templates/${event.template}", event.data)
-
-            pdfMaker.makePdf(
-                templateHtml,
-                outputStream
-            )
+            application.makePdf(event.template, event.data, outputStream)
         } catch (e: TemplateNotFoundException) {
             logger.log(e.message)
             return errorResponse("Template not found.", event.requestId, 400)
         }
 
-        s3Uploader.upload(s3BucketName, event.filename, outputStream.toByteArray())
+        application.uploadPdf(event.filename, outputStream.toByteArray())
 
-        return successResponse(s3BucketName, event.filename, event.requestId)
+        return successResponse(application.s3BucketName(), event.filename, event.requestId)
     }
 
     private fun successResponse(s3BucketName: String, filename: String, requestId: String): Map<String, Any> {

@@ -62,7 +62,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'crisp.pdfmaker.AppKt'
+    mainClass = 'crisp.pdfmaker.MainKt'
 }
 
 tasks {
@@ -95,7 +95,7 @@ tasks {
         }
 
         manifest {
-            attributes "Main-Class": "crisp.pdfmaker.AppKt"
+            attributes "Main-Class": "crisp.pdfmaker.MainKt"
         }
 
         from {

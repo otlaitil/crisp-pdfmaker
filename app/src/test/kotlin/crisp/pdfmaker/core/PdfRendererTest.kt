@@ -1,4 +1,4 @@
-package crisp.pdfmaker
+package crisp.pdfmaker.core
 
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
@@ -10,8 +10,8 @@ import kotlin.test.assertTrue
 class PdfMakerTest {
     @Test
     fun `generates a pdf file successfully`() {
-        val pdfMaker = PdfMaker(
-            "/template-assets",
+        val pdfMaker = PdfRenderer(
+            Application.defaultTemplateAssetsPath(),
             useAccessibilityMode = false
         )
 
@@ -24,7 +24,7 @@ class PdfMakerTest {
             </html>
         """.trimIndent()
 
-        pdfMaker.makePdf(htmlContent, stream)
+        pdfMaker.renderPdf(htmlContent, stream)
 
         val generatedPdfText = extractPdfText(stream.toByteArray())
 

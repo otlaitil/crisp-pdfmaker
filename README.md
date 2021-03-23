@@ -6,10 +6,11 @@ AWS Lambda backed service for generating accessible PDF's. Uses `thymeleaf` temp
 
 * Add your templates to `templates/` directory, see example template `hello`
     * Place images to `template-assets/images` and fonts to `template-assets/fonts`
+* Build the docker image with `make build`
 * Open Web UI with `make run` and navigate to `http://localhost:7000`
-* Edit the templates with your favourite text editor, refresh page to see the PDF.
+* Edit the templates with your favourite text editor, refresh page to see the PDF
 * Build jar and deploy
-* Invoke the lambda with HTTP POST, generated PDF is save to the configured S3 bucket.
+* Invoke the lambda with HTTP POST, generated PDF is save to the configured S3 bucket
 
 ## Deployment
 

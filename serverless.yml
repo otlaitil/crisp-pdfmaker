@@ -26,10 +26,11 @@ package:
 
 functions:
   makePdf:
-    handler: crisp.pdfmaker.Handler
+    handler: crisp.pdfmaker.lambda.Handler
     timeout: 30
     environment:
       BUCKET_NAME: ${self:custom.bucketName}
+      TEMPLATE_LOCATION: classpath
     events:
       - http:
           path: /

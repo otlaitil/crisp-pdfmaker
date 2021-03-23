@@ -1,15 +1,17 @@
-package crisp.pdfmaker
+package crisp.pdfmaker.core
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class TemplateProcessorTest {
-    val templateProcessor = TemplateProcessor(ResolverType.CLASSLOADER)
+class PdfTemplateProcessorTest {
+    private val templateProcessor = PdfTemplateProcessor(
+        Application.defaultTemplatePath()
+    )
 
     @Test
     fun `processes a template successfully`() {
-        val template = "templates/test"
+        val template = "test"
         val data = mapOf("name" to "Otto")
 
         val htmlContent = templateProcessor.process(template, data)

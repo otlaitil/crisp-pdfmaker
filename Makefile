@@ -1,5 +1,10 @@
 IMAGE = crisp-pdfmaker
-RUN = docker run -p 7000:7000 --volume `pwd`:/app --rm -ti $(IMAGE)
+
+MOUNT_APP = --volume `pwd`:/app
+MOUNT_GRADLE = --volume `pwd`/tmp:/root/.gradle/caches
+
+RUN = docker run -p 7000:7000 -e BUCKET_NAME=foo -e TEMPLATE_LOCATION=filesystem $(MOUNT_APP) $(MOUNT_GRADLE) --rm -ti $(IMAGE)
+TEST_RUN = docker run -e BUCKET_NAME=foo -e TEMPLATE_LOCATION=classpath $(MOUNT_APP) $(MOUNT_GRADLE) --rm -ti $(IMAGE)
 
 build:
 	docker build -t $(IMAGE) .
@@ -10,7 +15,7 @@ jar:
 run:
 	$(RUN) gradle run
 test:
-	$(RUN) gradle test
+	$(TEST_RUN) gradle test
 clean:
 	$(RUN) gradle clean
 

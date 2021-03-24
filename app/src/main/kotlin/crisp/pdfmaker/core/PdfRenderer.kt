@@ -1,18 +1,18 @@
-package crisp.pdfmaker
+package crisp.pdfmaker.core
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import java.io.OutputStream
 
-interface IPdfMaker {
-    fun makePdf(htmlContent: String, out: OutputStream)
+interface IPdfRenderer {
+    fun renderPdf(htmlContent: String, out: OutputStream)
 }
 
-class PdfMaker(
+class PdfRenderer(
     private val assetsPath: String,
     private val useAccessibilityMode: Boolean = true
-) : IPdfMaker {
+) : IPdfRenderer {
 
-    override fun makePdf(htmlContent: String, out: OutputStream) {
+    override fun renderPdf(htmlContent: String, out: OutputStream) {
         val builder = PdfRendererBuilder().apply {
             useFastMode()
             usePdfUaAccessbility(useAccessibilityMode)

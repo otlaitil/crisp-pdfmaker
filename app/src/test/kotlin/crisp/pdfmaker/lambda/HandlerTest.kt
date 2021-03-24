@@ -1,15 +1,26 @@
-package crisp.pdfmaker
+package crisp.pdfmaker.lambda
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import crisp.pdfmaker.core.IPdfRenderer
+import crisp.pdfmaker.core.Application
+import crisp.pdfmaker.core.IS3Uploader
+import crisp.pdfmaker.core.PdfTemplateProcessor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HandlerTest {
-    private val fakeS3Uploader: IS3Uploader = mock {}
+    private val fakeS3Uploader: IS3Uploader = mock { on { s3BucketName() } doReturn "test-bucket" }
+    private val fakePdfMaker: IPdfRenderer = mock {}
+    private val templateProcessor = PdfTemplateProcessor(
+        Application.defaultTemplatePath()
+    )
+    private val application = Application(
+        fakePdfMaker, fakeS3Uploader, templateProcessor
+    )
 
     private val mockLogger: LambdaLogger = mock {}
     private val mockContext: Context = mock {
@@ -18,8 +29,6 @@ class HandlerTest {
 
     @Test
     fun `handler works as expected`() {
-        val fakePdfMaker: IPdfMaker = mock {}
-
         val body = mapOf(
             "template" to "test",
             "filename" to "test.pdf",
@@ -31,11 +40,7 @@ class HandlerTest {
 
         val event = mapOf("body" to Gson().toJson(body))
 
-        val handler = Handler(
-            pdfMaker = fakePdfMaker,
-            s3Uploader = fakeS3Uploader,
-            s3BucketName = "test-bucket"
-        )
+        val handler = Handler(application)
 
         val actualResponse = handler.handleRequest(event, context = mockContext)
 
@@ -60,8 +65,6 @@ class HandlerTest {
 
     @Test
     fun `returns an error response if template is not found`() {
-        val fakePdfMaker: IPdfMaker = mock {}
-
         val body = mapOf(
             "template" to "nonexisting-template",
             "filename" to "test.pdf",
@@ -73,11 +76,7 @@ class HandlerTest {
 
         val event = mapOf("body" to Gson().toJson(body))
 
-        val handler = Handler(
-            pdfMaker = fakePdfMaker,
-            s3Uploader = fakeS3Uploader,
-            s3BucketName = "test-bucket"
-        )
+        val handler = Handler(application)
 
         val actualResponse = handler.handleRequest(event, context = mockContext)
 

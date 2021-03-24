@@ -51,6 +51,13 @@ dependencies {
     implementation 'software.amazon.awssdk:bom:2.16.18'
     implementation 'software.amazon.awssdk:s3:2.16.18'
 
+    // logging according to AWS instructions
+    // https://docs.aws.amazon.com/lambda/latest/dg/java-logging.html
+    implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.0'
+    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.2.0'
+
     // Use the Kotlin test library.
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
@@ -58,6 +65,8 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 }
 
 application {
